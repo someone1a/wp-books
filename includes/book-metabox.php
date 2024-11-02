@@ -71,7 +71,8 @@ function book_uploader_save_meta($post_id) {
     }
 
     if (isset($_POST['book_html_content'])) {
-        update_post_meta($post_id, '_book_uploader_html_content', wp_kses_post($_POST['book_html_content']));
+        $html_content = book_uploader_verify_and_wrap_content(wp_kses_post($_POST['book_html_content']));
+        update_post_meta($post_id, '_book_uploader_html_content', $html_content);
     }
 
     // Add validation for external URL and local file fields
