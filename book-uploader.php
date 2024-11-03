@@ -55,3 +55,24 @@ function book_uploader_validate_fields($external_url, $local_file) {
 function book_uploader_post_publication() {
     // Add your code here to handle the posting of publications
 }
+
+// Function to handle HTML structure for book content
+function book_uploader_handle_html_structure($content) {
+    $html_structure = '<!-- LIBRO PARA WORDPRESS -->' . $content;
+    return $html_structure;
+}
+
+// Function to initialize and enqueue the HTML editor
+function book_uploader_initialize_html_editor() {
+    wp_enqueue_script('html-editor', plugins_url('assets/js/html-editor.js', __FILE__), ['jquery'], null, true);
+    wp_enqueue_style('html-editor', plugins_url('assets/css/html-editor.css', __FILE__));
+}
+add_action('admin_enqueue_scripts', 'book_uploader_initialize_html_editor');
+
+// Function to verify if the content is HTML or plain text and wrap plain text in a paragraph
+function book_uploader_verify_and_wrap_content($content) {
+    if ($content === strip_tags($content)) {
+        $content = '<p>' . esc_html($content) . '</p>';
+    }
+    return $content;
+}

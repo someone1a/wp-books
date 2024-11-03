@@ -17,6 +17,7 @@ function book_uploader_metabox_callback($post) {
     $archivo_local = get_post_meta($post->ID, '_book_uploader_file', true);
     $book_cover = get_post_meta($post->ID, '_book_uploader_cover', true);
     $search_term = get_post_meta($post->ID, '_book_uploader_search_term', true);
+    $html_content = get_post_meta($post->ID, '_book_uploader_html_content', true);
 
     echo '<label for="book_external_url">' . __('Enlace Externo: ') . '</label>';
     echo '<input type="text" id="book_external_url" name="book_external_url" value="' . esc_attr($url_externa) . '" style="width: 100%;" />';
@@ -32,6 +33,9 @@ function book_uploader_metabox_callback($post) {
     echo '<input type="file" id="book_cover" name="book_cover" />';
 
     echo '<p>' . __('o') . '</p>';
+
+    echo '<label for="book_html_content">' . __('Contenido HTML: ') . '</label>';
+    echo '<textarea id="book_html_content" name="book_html_content" style="width: 100%; height: 200px;">' . esc_textarea($html_content) . '</textarea>';
 
     // Display error messages for invalid input fields
     if (isset($_GET['book_uploader_error'])) {
@@ -64,6 +68,11 @@ function book_uploader_save_meta($post_id) {
         $search_term = sanitize_text_field($_POST['book_search_term']);
         $cover_url = book_uploader_search_cover($search_term);
         update_post_meta($post_id, '_book_uploader_cover', $cover_url);
+    }
+
+    if (isset($_POST['book_html_content'])) {
+        $html_content = book_uploader_verify_and_wrap_content(wp_kses_post($_POST['book_html_content']));
+        update_post_meta($post_id, '_book_uploader_html_content', $html_content);
     }
 
     // Add validation for external URL and local file fields
